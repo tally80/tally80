@@ -13,27 +13,30 @@ stores = []
 transactions = []
 
 
-#Try to load the customers list from the file. If it fails at all, then it will use the blank list.
+#Load data from a text file into the global list. If file does not exist, it will make a new .txt file.
 try:
   f = open("customers.txt", "r")
   customers = eval(f.readline())
   f.close()
+#This will mean if the Try code cannot execute, then it will bypass it and continue to next snippet.
 except:
   pass
 
-#Try to load the stores list from the file. If it fails at all, then it will use the blank list.
+#Load data from a text file into the global list. If file does not exist, it will make a new .txt file.
 try:
   f = open("stores.txt", "r")
   stores = eval(f.readline())
   f.close()
+#This will mean if the Try code cannot execute, then it will bypass it and continue to next snippet.
 except:
   pass
 
-#Try to load the transactions list from the file. If it fails at all, then it will use the blank list.
+#Load data from a text file into the global list. If file does not exist, it will make a new .txt file.
 try:
   f = open("transactions.txt", "r")
   transactions = eval(f.readline())
   f.close()
+#This will mean if the Try code cannot execute, then it will bypass it and continue to next snippet.
 except:
   pass
 
@@ -43,22 +46,29 @@ days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Satur
 
 #Subroutine for adding a new customer
 def newCustomer():
+    #Get data from user through inputs. .title() will force the first letter of each word to capitalise.
     customerName = input("Please enter the customer's first and last name: ").title()
     startDate = input("Please enter the start date (dd/mm/yyyy): ")
+    #This converts the input data to datetime format.
     validFrom = datetime.datetime.strptime(startDate,"%d/%m/%Y").date()
+    #this is to validate the date intered is 10 characters inc slashes. if not it loops back to the input again.
     while (len(startDate)) != 10:
         print("Error! Please enter the date in the valid format.")
         startDate = input("Please enter the start date (dd/mm/yyyy): ")
         validFrom = datetime.datetime.strptime(startDate,"%d/%m/%Y").date()
+    #this takes the start date and adds 365 days to it to create the expiry date automatically.
     validUntil = validFrom + datetime.timedelta(days=365)
     cardNumber = input("Enter the new SIP card number, e.g. SIP12345: ")
+    #This creates a new list of all the SIP card numbers in the customer list ready to be searched to check the new number is unique.
     cardList = []
     for row in customers:
         cardList.append(row[1])
+    #this iterates the list and if the number is present, returns an error message and loops back to input.
     while cardNumber in cardList:
         print("ERROR! Card number already in use.")
         cardNumber = input("Enter the new SIP card number, e.g. SIP12345: ")
-        
+    
+    #The variables needed are added to a new list that is then appended to the customer list.
     row = [customerName, cardNumber, validFrom, validUntil]
     customers.append(row)
     
@@ -69,27 +79,32 @@ def newCustomer():
 
 #subroutine for adding a new store
 def newStore():
-    
+    #Get data from user through inputs. .title() will force the first letter of each word to capitalise.
     storeName = input("Please Enter the name of your store: ").title()
+    #Validation to ensure user does not leave the field blank. Displays an error message and then loops back to input.
     while (storeName == ""):
         print("ERROR! Cannot be blank!")
         storeName = input("Please Enter the name of your store: ").title()
     
     discountDay = input("Please enter the day you wish to offer 10% discount on purchases: ").title()
+    #Validation to ensure user does not leave the field blank. Displays an error message and then loops back to input.
     while(discountDay == ""):
         print("ERROR! Cannot be blank!")
         discountDay = input("Please enter the day you wish to offer 10% discount on purchases: ").title()
     
     delivery = input("Will you be offering free deliveries to SIP members? Yes / No: ").title()
+    #Validation to ensure user enters "Yes" or "No". Message then loops back to input.
     while (delivery == "" and delivery != "Yes" and delivery != "No"):
         print("ERROR! invalid input! Please Enter either Yes or No.")
         delivery = input("Will you be offering free deliveries to SIP members? Yes / No: ").title()
         
     products = input("Enter the product you will offer a 2 for 1 deal on: ").title()
+    #Validation to ensure user does not leave the field blank. Displays an error message and then loops back to input.
     while (products == ""):
         print("ERROR! Cannot be blank!")
         products = input("Enter the product you will offer a 2 for 1 deal on: ").title()
-           
+    
+    #Variables required are added to a new list which is then appended to the stores list.
     row = [storeName, discountDay, delivery, products]
     stores.append(row)
     
@@ -100,27 +115,35 @@ def newStore():
 
 #subroutine for adding a new transaction
 def newTransaction():
+    #Get data from user through inputs. .title() will force the first letter of each word to capitalise.
     name = input("Enter the name of the store: ").title()
+    #Adds the store names in store list to a new list to be searched to find if store name entered by user already exists.
     storeList = []
     for row in stores:
         storeList.append(row[0])
+    #If the store name is not in the list, then an error message is displayed and loops back to input.
     while name.title() not in storeList:
         print("ERROR. Cannot find store name.")
         name = input("Enter the name of the store: ").title()
     
+    #This iteration takes the store name and searches the relevant index to see if they offer free delivery.
     for row in stores:
+        #if they offer free delivery, then delivery costs 0.0.
         if name == row[0] and row[2] == "Yes":
             delivery = 0.0
             print("Customer recieves free delivery.")
             time.sleep(1)
+        #if they do not offer free delivery, then delivery costs 2.00
         elif name == row[0] and row[2] == "No":
             delivery = 2.00
             print("Delivery is charged at £2.00")
             time.sleep(1)
     
+    #fetches today's date.
     date = datetime.date.today()
-    
+    #Uses the date and returns the name of the weekday. E.g. Monday.
     day = calendar.day_name[date.weekday()]
+    #this creates
     for row in stores:
         if name == row[0] and day == row[1]:
             discount = 0.1
