@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @tally80
-- 👀 I’m interested in software development and physical computing
-- 🌱 I’m currently learning Python3
+- 👀 I’m interested in software development and Web Development
+- 🌱 I’m currently learning Laravel
 - 📫 How to reach me: tally#2341
 
 <!---
